@@ -13,17 +13,29 @@ INDIR = 'input/'
 OUTDIR = 'output.ignore/'
 DATADIR = 'data.ignore/'
 
-def main():
-    os.mkdir(INDIR)
-    os.mkdir(OUTDIR)
-    os.mkdir(DATADIR)
+GENERATORS = [
+    ("splitted",'python ./tools/wkhtmltopdf-split.py'),
+    ("normal",'wkhtmltopdf')
+]
 
-    input_files = os.listdir(INDIR)
-    for input_file in input_files:
-        input_path = INDIR + input_file
-        output_path = OUTDIR + input_file + '.pdf'
-        data_path = DATADIR + input_file + '.csv'
-        os.system('python3 tools/monitor.py 0.1 {} {}'.format(data_path, ' '.join(['wkhtmltopdf'] + sys.argv[1:] + [input_path, output_path])))
+def main():
+    if not os.path.exists(INDIR):
+        os.mkdir(INDIR)
+    
+    if not os.path.exists(OUTDIR):
+        os.mkdir(OUTDIR)
+
+    if not os.path.exists(DATADIR):
+        os.mkdir(DATADIR)
+
+    for generator in GENERATORS:
+        input_files = os.listdir(INDIR)
+        for input_file in input_files:
+            print('Processing {} using {}'.format(input_file, generator[0]))
+            input_path = INDIR + input_file
+            output_path = OUTDIR + input_file + '.' + generator[0] + '.pdf'
+            data_path = DATADIR + input_file + '.' + generator[0] + '.csv'
+            os.system('python3 tools/monitor.py 0.1 {} {}'.format(data_path, ' '.join([generator[1]] + sys.argv[1:] + [input_path, output_path])))
 
 if __name__ == '__main__':
     main()

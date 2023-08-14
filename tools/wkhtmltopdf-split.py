@@ -8,6 +8,7 @@ wkhtmltopdf can work faster.
 import os
 import sys
 import time
+import tempfile
 from xml.etree import ElementTree
 from process_table import split_table
 
@@ -15,12 +16,12 @@ def main():
     if len(sys.argv) < 3:
         print('Usage: {} <input> <output>'.format(sys.argv[0]))
         sys.exit(1)
-    
+        
     start = time.time()
     etree = ElementTree.parse(sys.argv[1])
-    split_table(etree, 100)
+    split_table(etree.getroot(), 10000)
     print('Splitting tables took {} seconds'.format(time.time() - start))
-    tmp = sys.argv[1] + '.tmp'
+    tmp = tempfile.mktemp(suffix='.html')
     etree.write(tmp, encoding='utf-8')
     output = sys.argv[2]
 

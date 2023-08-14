@@ -256,21 +256,21 @@ if __name__ == '__main__':
                 <td>7</td>
             </tr>
             <tr>
-                <td>2</td>
-                <td>2</td>
-                <td>2</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
             </tr>
         </table>
         <table>
             <tr>
-                <td>3</td>
-                <td>3</td>
-                <td>3</td>
+                <td>2</td>
+                <td>2</td>
+                <td>2</td>
             </tr>
             <tr>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3</td>
             </tr>
         </table>
     </root>

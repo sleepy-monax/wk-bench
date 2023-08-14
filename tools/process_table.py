@@ -28,7 +28,8 @@ def split_table(etree, max_rows):
     :param max_rows: The maximum number of rows per table
     """
     index = 0
-    for child in etree:
+    while index < len(etree):
+        child = etree[index]
         if child.tag == 'table' and len(child) > max_rows:
             etree.remove(child)
 
@@ -42,7 +43,7 @@ def split_table(etree, max_rows):
                 # unique and we want to avoid duplicate ids
                 copy_attributes(child, table, exclude=None if first else ['id'])
                 table.extend(rows[:max_rows])
-
+                split_table(table, max_rows)
                 index += 1
                 first = False
                 rows = rows[max_rows:]

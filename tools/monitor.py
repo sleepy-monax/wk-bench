@@ -5,6 +5,18 @@ import psutil
 import sys
 import time
 
+def tree_memory(psutil_process):
+    """
+    Calculate the memory usage of a process and its children.
+
+    :param psutil_process: The process to calculate the memory usage of
+    :return: The memory usage of the process and its children in bytes
+    """
+    memory = psutil_process.memory_info().rss
+    for child in psutil_process.children():
+        memory += tree_memory(child)
+    return memory
+
 def monitor(pid, interval, output):
     """
     Monitor a process and its children CPU and memory usage.
@@ -15,15 +27,17 @@ def monitor(pid, interval, output):
     """
     start = time.time()
     process = psutil.Process(pid)
+    max_memory = 0
     with open(output, 'w') as f:
         f.write('time,cpu,memory\n')
         while process.is_running() and process.status() != psutil.STATUS_ZOMBIE:
             cpu = process.cpu_percent(interval=interval)
-            memory = process.memory_info().rss
+            memory = tree_memory(process)
+            max_memory = max(max_memory, memory)
             f.write('{},{},{}\n'.format(time.time() - start, cpu, memory))
-            print('Process {} CPU: {}% Memory: {} bytes'.format(pid, cpu, memory))
+        f.write('{},0,{}\n'.format(time.time() - start, max_memory))
         f.flush()
-        print('Process {} is not running anymore'.format(pid))
+        print('Process {} is not running anymore (max memory: {}Mib)'.format(pid, max_memory / 1024 / 1024))
 
 def monitorSubprocess(args, interval, output):
     """
