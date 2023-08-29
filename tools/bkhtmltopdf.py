@@ -29,6 +29,5 @@ def main():
     os.system('wkhtmltopdf {} {}'.format(tmp, output))
     os.remove(tmp)
 
-
 if __name__ == '__main__':
     main()

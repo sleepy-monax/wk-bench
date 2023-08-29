@@ -22,12 +22,7 @@ def main():
     etree = ElementTree.parse(sys.argv[1])
     split_table(etree.getroot(), 500)
     print('Splitting tables took {} seconds'.format(time.time() - start))
-    tmp = tempfile.mktemp(suffix='.html')
-    etree.write(tmp, encoding='utf-8')
-    output = sys.argv[2]
-
-    os.system('wkhtmltopdf {} {}'.format(tmp, output))
-    os.remove(tmp)
+    etree.write(sys.argv[2], encoding='utf-8')
 
 
 if __name__ == '__main__':

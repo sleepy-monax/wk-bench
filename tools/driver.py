@@ -14,14 +14,16 @@ OUTDIR = 'output.ignore/'
 DATADIR = 'data.ignore/'
 
 GENERATORS = [
-    ("splitted",'python ./tools/wkhtmltopdf-split.py'),
-    ("normal",'wkhtmltopdf')
+    ("splitted", 'python ./tools/wkhtmltopdf-split.py'),
+    ("normal", 'wkhtmltopdf'),
+    ("blink", "")
 ]
+
 
 def main():
     if not os.path.exists(INDIR):
         os.mkdir(INDIR)
-    
+
     if not os.path.exists(OUTDIR):
         os.mkdir(OUTDIR)
 
@@ -35,7 +37,9 @@ def main():
             input_path = INDIR + input_file
             output_path = OUTDIR + input_file + '.' + generator[0] + '.pdf'
             data_path = DATADIR + input_file + '.' + generator[0] + '.csv'
-            os.system('python3 tools/monitor.py 0.1 {} {}'.format(data_path, ' '.join([generator[1]] + sys.argv[1:] + [input_path, output_path])))
+            os.system('python3 tools/monitor.py 0.1 {} {}'.format(data_path,
+                      ' '.join([generator[1]] + sys.argv[1:] + [input_path, output_path])))
+
 
 if __name__ == '__main__':
     main()

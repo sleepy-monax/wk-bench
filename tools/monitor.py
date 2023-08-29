@@ -5,6 +5,7 @@ import psutil
 import sys
 import time
 
+
 def tree_memory(psutil_process):
     """
     Calculate the memory usage of a process and its children.
@@ -16,6 +17,7 @@ def tree_memory(psutil_process):
     for child in psutil_process.children():
         memory += tree_memory(child)
     return memory
+
 
 def monitor(pid, interval, output):
     """
@@ -37,7 +39,9 @@ def monitor(pid, interval, output):
             f.write('{},{},{}\n'.format(time.time() - start, cpu, memory))
         f.write('{},0,{}\n'.format(time.time() - start, max_memory))
         f.flush()
-        print('Process {} is not running anymore (max memory: {}Mib)'.format(pid, max_memory / 1024 / 1024))
+        print('Process {} is not running anymore (max memory: {}Mib)'.format(
+            pid, max_memory / 1024 / 1024))
+
 
 def monitorSubprocess(args, interval, output):
     """
@@ -49,20 +53,26 @@ def monitorSubprocess(args, interval, output):
     """
     process = psutil.Popen(args)
     monitor(process.pid, interval, output)
-    process.wait() # *charge shotgun* DIE DIE DIE ZOMBIE!!!
+    process.wait()  # *charge shotgun* DIE DIE DIE ZOMBIE!!!
+
 
 def main():
-    parser = argparse.ArgumentParser(description='Monitor a process and its children CPU and memory usage.')
-    parser.add_argument('interval', type=float, help='The interval in seconds between each measurement')
-    parser.add_argument('output', type=str, help='The file to write the measurements to')
-    parser.add_argument('command', nargs=argparse.REMAINDER, help='The command to run')
+    parser = argparse.ArgumentParser(
+        description='Monitor a process and its children CPU and memory usage.')
+    parser.add_argument('interval', type=float,
+                        help='The interval in seconds between each measurement')
+    parser.add_argument('output', type=str,
+                        help='The file to write the measurements to')
+    parser.add_argument('command', nargs=argparse.REMAINDER,
+                        help='The command to run')
     args = parser.parse_args()
 
     if len(args.command) == 0:
         parser.print_help()
         sys.exit(1)
-    
+
     monitorSubprocess(args.command, args.interval, args.output)
+
 
 if __name__ == '__main__':
     main()
